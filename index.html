@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apresentação - Arena Matemática</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+        }
+        
+        h1 {
+            color: #1a2a6c;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .slide-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.95);
+            margin-bottom: 15px;
+            touch-action: pan-y;
+        }
+        
+        .slides {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            height: 100%;
+            will-change: transform;
+        }
+        
+        .slide {
+            min-width: 100%;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .slide-title {
+            color: #1a2a6c;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #fdbb2d;
+        }
+        
+        .slide-content {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: justify;
+        }
+        
+        .slide-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .slide-content li {
+            margin-bottom: 8px;
+        }
+        
+        .code-sample {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            margin: 12px 0;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+        
+        .formula {
+            background: #f8f9fa;
+            padding: 12px;
+            border-left: 5px solid #1a2a6c;
+            margin: 12px 0;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .nav-btn {
+            background: #1a2a6c;
+            color: white;
+            border: none;
+            padding: 14px 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            min-height: 50px;
+            touch-action: manipulation;
+        }
+        
+        .nav-btn:hover, .nav-btn:active {
+            background: #fdbb2d;
+            color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+        
+        .slide-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+        
+        .indicator.active {
+            background: white;
+            transform: scale(1.3);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #fdbb2d;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .slide-number {
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .team-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .team-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .team-header h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .team-members {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .member {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        .technologies {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        /* Melhorias para dispositivos móveis */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 12px 0;
+                margin-bottom: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .slide {
+                padding: 20px 15px;
+            }
+            
+            .slide-title {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
+            
+            .slide-content {
+                font-size: 0.95rem;
+            }
+            
+            .nav-btn {
+                padding: 12px 18px;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
+            
+            .team-members {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .team-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .team-header h3 {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .slide-title {
+                font-size: 1.3rem;
+            }
+            
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .team-members {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Melhorias de acessibilidade */
+        @media (prefers-reduced-motion: reduce) {
+            .slides {
+                transition: none;
+            }
+        }
+        
+        /* Indicador de carregamento para dispositivos lentos */
+        .loading::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #fdbb2d;
+            z-index: 9999;
+            transform-origin: 0%;
+            animation: loading 1s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Apresentação - Arena Matemática</h1>
+            <p>Jogo Educativo para o Ensino de Matemática</p>
+        </header>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="slide-number" id="slide-number">Slide 1 de 10</div>
+        
+        <div class="slide-container" id="slide-container">
+            <div class="slides" id="slides">
+                <!-- Slides aqui (conteúdo igual ao anterior) -->
+                <!-- Slide 1 -->
+                <div class="slide">
+                    <h2 class="slide-title">Visão Geral do Jogo</h2>
+                    <div class="slide-content">
+                        <p><strong>Objetivo:</strong> Treinar operações matemáticas de forma interativa e divertida.</p>
+                        <p><strong>Modos disponíveis:</strong></p>
+                        <ul>
+                            <li>Operações básicas (+ − × ÷)</li>
+                            <li>Porcentagem</li>
+                            <li>MDC & MMC</li>
+                            <li>Números primos</li>
+                            <li>Probabilidade</li>
+                        </ul>
+                        <p><strong>Recursos:</strong> Sistema de pontuação, explicações passo a passo, histórico de desempenho exportável e gráficos de progresso.</p>
+                    </div>
+                </div>
+                
+                <!-- Slide 2 -->
+                <div class="slide">
+                    <h2 class="slide-title">Sistema de Probabilidade - Implementação</h2>
+                    <div class="slide-content">
+                        <p>A função <code>generateProbabilityQuestion</code> é responsável por criar questões de probabilidade:</p>
+                        
+                        <div class="code-sample">
+                            function generateProbabilityQuestion(min, max, level) {<br>
+                            &nbsp;&nbsp;// 7 tipos de questões pré-definidas<br>
+                            &nbsp;&nbsp;// Seleção baseada na dificuldade<br>
+                            &nbsp;&nbsp;// Geração de alternativas diversificadas<br>
+                            &nbsp;&nbsp;// Retorno da questão formatada<br>
+                            }
+                        </div>
+                        
+                        <p><strong>Tipos de Questões:</strong></p>
+                        <ul>
+                            <li>Moeda: Probabilidade de cara/coroa</li>
+                            <li>Dado par/ímpar: Probabilidade de números pares/ímpares</li>
+                            <li>Dado específico: Probabilidade de um número específico</li>
+                            <li>Cartas: Probabilidade de tirar um Ás</li>
+                            <li>Naipes: Probabilidade de tirar uma carta de naipe específico</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Slide 3 -->
+                <div class="slide">
+                    <h2 class="slide-title">Fórmulas de Probabilidade</h2>
+                    <div class="slide-content">
+                        <p><strong>Fórmula Base:</strong></p>
+                        <div class="formula">
+                            P(evento) = número de casos favoráveis / número de casos totais
+                        </div>
+                        
+                        <p><strong>Exemplos Práticos:</strong></p>
+                        <ul>
+                            <li><strong>Moeda:</strong> P(cara) = 1/2</li>
+                            <li><strong>Dado:</strong> P(número par) = 3/6 = 1/2</li>
+                            <li><strong>Baralho:</strong> P(Ás) = 4/52 = 1/13</li>
+                            <li><strong>Naipes:</strong> P(Copas) = 13/52 = 1/4</li>
+                        </ul>
+                        
+                        <p>O sistema simplifica as frações automaticamente para apresentar as respostas na forma mais reduzida possível.</p>
+                    </div>
+                </div>
+                
+                <!-- Slide 4 -->
+                <div class="slide">
+                    <h2 class="slide-title">Geração de Alternativas</h2>
+                    <div class="slide-content">
+                        <p><strong>Métodos Utilizados:</strong></p>
+                        <ul>
+                            <li><strong>Frações equivalentes:</strong> Simplificação da resposta correta</li>
+                            <li><strong>Denominadores variados:</strong> Geração de frações com diferentes denominadores</li>
+                            <li><strong>Valores próximos:</strong> Frações com valores próximos ao correto</li>
+                        </ul>
+                        
+                        <p><strong>Controle de Qualidade:</strong></p>
+                        <ul>
+                            <li>Garante alternativas distintas</li>
+                            <li>Evita duplicatas</li>
+                            <li>Mantém consistência com o nível de dificuldade</li>
+                        </ul>
+                        
+                        <div class="code-sample">
+                            // Adicionar alternativas incorretas<br>
+                            while (alternatives.size < 4) {<br>
+                            &nbsp;&nbsp;let numAlt, denAlt;<br>
+                            &nbsp;&nbsp;if (Math.random() < 0.5) {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;// Frações com denominadores diferentes<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;denAlt = rnd(2, 12);<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;numAlt = rnd(1, denAlt - 1);<br>
+                            &nbsp;&nbsp;} else {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;// Frações com valores próximos<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;denAlt = simplified.den + rnd(-3, 3);<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;if (denAlt < 2) denAlt = 2;<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;numAlt = Math.max(1, Math.min(denAlt - 1, <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Math.round((simplified.num / simplified.den) * denAlt)));<br>
+                            &nbsp;&nbsp;}<br>
+                            &nbsp;&nbsp;// ... adiciona alternativa se for diferente da correta<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Slide 5 -->
+                <div class="slide">
+                    <h2 class="slide-title">Sistema de Dificuldade</h2>
+                    <div class="slide-content">
+                        <p><strong>Distribuição por Nível:</strong></p>
+                        <ul>
+                            <li><strong>Fácil:</strong> Questões simples (moeda/dados)</li>
+                            <li><strong>Médio:</strong> Questões intermediárias (mais tipos de dados)</li>
+                            <li><strong>Difícil:</strong> Todas as categorias (incluindo baralho)</li>
+                        </ul>
+                        
+                        <p><strong>Adaptação Automática:</strong></p>
+                        <ul>
+                            <li>Intervalos numéricos ajustáveis</li>
+                            <li>Complexidade das questões escalável</li>
+                            <li>Alternativas proporcionalmente desafiadoras</li>
+                        </ul>
+                        
+                        <div class="code-sample">
+                            // Selecionar tipo de questão baseado no nível<br>
+                            let typeIndex;<br>
+                            if (level === 'facil') {<br>
+                            &nbsp;&nbsp;typeIndex = rnd(0, 4); // Moeda ou dados<br>
+                            } else if (level === 'medio') {<br>
+                            &nbsp;&nbsp;typeIndex = rnd(0, 5); // Inclui mais tipos de dados<br>
+                            } else {<br>
+                            &nbsp;&nbsp;typeIndex = rnd(0, questionTypes.length - 1); // Todos os tipos<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Slide 6 -->
+                <div class="slide">
+                    <h2 class="slide-title">Outras Operações - Resumo</h2>
+                    <div class="slide-content">
+                        <p><strong>Operações Básicas:</strong></p>
+                        <ul>
+                            <li>Geração de expressões aleatórias</li>
+                            <li>Cálculo automático de resultados</li>
+                            <li>Explicações passo a passo</li>
+                        </ul>
+                        
+                        <p><strong>Porcentagem:</strong></p>
+                        <ul>
+                            <li>Cálculo de percentuais</li>
+                            <li>Explicação com conversão para fração</li>
+                        </ul>
+                        
+                        <p><strong>MDC & MMC:</strong></p>
+                        <ul>
+                            <li>Algoritmo de Euclides para MDC</li>
+                            <li>Fórmula MMC(a,b) = |a×b|/MDC(a,b)</li>
+                        </ul>
+                        
+                        <p><strong>Números Primos:</strong></p>
+                        <ul>
+                            <li>Teste de primalidade</li>
+                            <li>Explicação baseada em divisores</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Slide 7 -->
+                <div class="slide">
+                    <h2 class="slide-title">Sistema de Acompanhamento</h2>
+                    <div class="slide-content">
+                        <p><strong>Estatísticas em Tempo Real:</strong></p>
+                        <ul>
+                            <li>Contagem de acertos/erros</li>
+                            <li>Percentual de sucesso</li>
+                            <li>Melhor sequência de acertos</li>
+                        </ul>
+                        
+                        <p><strong>Histórico Detalhado:</strong></p>
+                        <ul>
+                            <li>Registro de todas as tentativas</li>
+                            <li>Tempo de resposta por questão</li>
+                            <li>Exportação para CSV</li>
+                        </ul>
+                        
+                        <p><strong>Visualização Gráfica:</strong></p>
+                        <ul>
+                            <li>Gráfico de evolução de desempenho</li>
+                            <li>Identificação visual de acertos/erros</li>
+                            <li>Progresso ao longo do tempo</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Slide 8 -->
+                <div class="slide">
+                    <h2 class="slide-title">Características Técnicas</h2>
+                    <div class="slide-content">
+                        <p><strong>Design Responsivo:</strong></p>
+                        <ul>
+                            <li>Adaptação para mobile/desktop</li>
+                            <li>Interface moderna e intuitiva</li>
+                            <li>Paleta de cores acessível</li>
+                        </ul>
+                        
+                        <p><strong>Temporizador Opcional:</strong></p>
+                        <ul>
+                            <li>Contagem regressiva configurável</li>
+                            <li>Pressão temporal ajustável</li>
+                            <li>Modo sem tempo limitado</li>
+                        </ul>
+                        
+                        <p><strong>Feedback Imediato:</strong></p>
+                        <ul>
+                            <li>Explicações contextuais</li>
+                            <li>Destaque visual para acertos/erros</li>
+                            <li>Correção automática</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Slide 9 -->
+                <div class="slide">
+                    <h2 class="slide-title">Próximos Passos Potenciais</h2>
+                    <div class="slide-content">
+                        <p><strong>Melhorias Futuras:</strong></p>
+                        <ul>
+                            <li>Adição de novos modos matemáticos</li>
+                            <li>Sistema de conquistas e recompensas</li>
+                            <li>Multiplayer competitivo</li>
+                            <li>Personalização de avatares</li>
+                            <li>Integração com plataformas educacionais</li>
+                        </ul>
+                        
+                        <p><strong>Expansões de Conteúdo:</strong></p>
+                        <ul>
+                            <li>Estatística básica</li>
+                            <li>Álgebra inicial</li>
+                            <li>Geometria simples</li>
+                            <li>Lógica matemática</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Slide 10 -->
+                <div class="slide">
+                    <div class="team-header">
+                        <h2>Trabalho de Matemática com Inteligência Artificial</h2>
+                        <h3>CETI Francisco Nunes</h3>
+                    </div>
+                    
+                    <div class="slide-content">
+                        <h3 style="text-align: center; color: #1a2a6c; margin-bottom: 20px;">Equipe de Desenvolvimento</h3>
+                        
+                        <div class="team-members">
+                            <div class="member">Ana Cris</div>
+                            <div class="member">Arthur</div>
+                            <div class="member">Kaylan</div>
+                            <div class="member">Sannyelly</div>
+                            <div class="member">Valdeci</div>
+                            <div class="member">Victor Gabriel</div>
+                            <div class="member">William</div>
+                        </div>
+                        
+                        <div class="technologies">
+                            <h4 style="text-align: center; color: #1a2a6c; margin-bottom: 15px;">Tecnologias Utilizadas</h4>
+                            <ul>
+                                <li><strong>HTML5</strong> - Estrutura do jogo e apresentação</li>
+                                <li><strong>CSS3</strong> - Estilização e design responsivo</li>
+                                <li><strong>JavaScript</strong> - Lógica do jogo e interatividade</li>
+                                <li><strong>Canvas API</strong> - Gráficos e visualizações</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 30px;">
+                            <p><strong>Obrigado pelo interesse no Arena Matemática!</strong></p>
+                            <div style="font-size: 3rem;">🧠</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="nav-btn" id="prev-btn">
+                <i class="fas fa-arrow-left"></i> Anterior
+            </button>
+            <button class="nav-btn" id="next-btn">
+                Próximo <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        
+        <div class="slide-indicators" id="indicators"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar classe de carregamento
+            document.body.classList.add('loading');
+            
+            // Aguardar o carregamento completo da página
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    document.body.classList.remove('loading');
+                }, 500);
+            });
+            
+            const slides = document.getElementById('slides');
+            const slideCount = document.querySelectorAll('.slide').length;
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicators = document.getElementById('indicators');
+            const progress = document.getElementById('progress');
+            const slideNumber = document.getElementById('slide-number');
+            const slideContainer = document.getElementById('slide-container');
+            
+            let currentSlide = 0;
+            let isAnimating = false;
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            // Create indicators
+            for (let i = 0; i < slideCount; i++) {
+                const indicator = document.createElement('div');
+                indicator.classList.add('indicator');
+                if (i === 0) indicator.classList.add('active');
+                indicator.addEventListener('click', () => goToSlide(i));
+                indicators.appendChild(indicator);
+            }
+            
+            // Update UI
+            function updateUI() {
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Update indicators
+                document.querySelectorAll('.indicator').forEach((ind, index) => {
+                    ind.classList.toggle('active', index === currentSlide);
+                });
+                
+                // Update progress bar
+                progress.style.width = `${((currentSlide + 1) / slideCount) * 100}%`;
+                
+                // Update slide number
+                slideNumber.textContent = `Slide ${currentSlide + 1} de ${slideCount}`;
+                
+                // Update button states
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === slideCount - 1;
+                
+                // Permitir nova animação após um curto período
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 400);
+            }
+            
+            // Go to specific slide
+            function goToSlide(index) {
+                if (isAnimating) return;
+                currentSlide = index;
+                updateUI();
+            }
+            
+            // Next slide
+            function nextSlide() {
+                if (currentSlide < slideCount - 1) {
+                    currentSlide++;
+                    updateUI();
+                }
+            }
+            
+            // Previous slide
+            function prevSlide() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateUI();
+                }
+            }
+            
+            // Event listeners para botões
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') nextSlide();
+                if (e.key === 'ArrowLeft') prevSlide();
+            });
+            
+            // Swipe para dispositivos touch
+            slideContainer.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+            
+            slideContainer.addEventListener('touchmove', e => {
+                // Prevenir scroll vertical durante o swipe horizontal
+                if (Math.abs(e.changedTouches[0].screenX - touchStartX) > 10) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            slideContainer.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, { passive: true });
+            
+            function handleSwipe() {
+                const minSwipeDistance = 50;
+                const swipeDistance = touchEndX - touchStartX;
+                
+                if (Math.abs(swipeDistance) < minSwipeDistance) return;
+                
+                if (swipeDistance > 0) {
+                    // Swipe para a direita - slide anterior
+                    prevSlide();
+                } else {
+                    // Swipe para a esquerda - próximo slide
+                    nextSlide();
+                }
+            }
+            
+            // Suporte a clique nos indicadores em dispositivos touch
+            document.querySelectorAll('.indicator').forEach(indicator => {
+                indicator.addEventListener('touchstart', function(e) {
+                    e.stopPropagation();
+                }, { passive: true });
+            });
+            
+            // Inicializar
+            updateUI();
+            
+            // Prevenir zoom indesejado em dispositivos móveis
+            document.addEventListener('gesturestart', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
